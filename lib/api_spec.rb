@@ -1,6 +1,7 @@
-module ApiSpec
+class ApiSpec
 end
 
+require_relative "api_spec/configuration"
 require_relative "api_spec/helpers"
 require_relative "api_spec/parameters"
 require_relative "api_spec/state"

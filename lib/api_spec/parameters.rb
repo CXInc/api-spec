@@ -1,4 +1,4 @@
-module ApiSpec
+class ApiSpec
   class Parameters
     attr_reader :query
 

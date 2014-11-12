@@ -16,7 +16,7 @@ end
 
 When(/^I GET "(.*?)"$/) do |path|
   parameters = ApiSpec::Parameters.new(:get, path)
-  @response = RestClient.get parameters.url, test_headers
+  @response = http_client.get parameters.url, test_headers
   puts "@response = #{@response}"
 end
 
@@ -29,7 +29,7 @@ When(/^I DELETE "(.*?)" with:$/) do |path, table|
 end
 
 Then(/^the status code is (\d+)$/) do |code|
-  @response.code.to_s.should == code
+  @response.status.to_s.should == code
 end
 
 Then(/^the Content\-Type is (.*)$/) do |content_type|

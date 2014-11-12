@@ -1,7 +1,12 @@
 require "rest-client"
 
-module ApiSpec
-  class ErrorResponse < Struct.new(:code, :body)
+# Make RestClient compatible with rack test helpers
+RestClient::Response.class_eval do
+  alias_method :status, :code
+end
+
+class ApiSpec
+  class ErrorResponse < Struct.new(:status, :body)
   end
 
   module Helpers
@@ -18,16 +23,16 @@ module ApiSpec
       begin
         case method
         when :get
-          @response = RestClient.get parameters.url,
+          @response = http_client.get parameters.url,
             headers.merge(params: parameters.query)
         when :post
-          @response = RestClient.post parameters.url, parameters.body,
+          @response = http_client.post parameters.url, parameters.body,
             headers.merge(content_type: :json)
         when :put
-          @response = RestClient.put parameters.url, parameters.body,
+          @response = http_client.put parameters.url, parameters.body,
             headers.merge(content_type: :json)
         when :delete
-          @response = RestClient.delete parameters.url,
+          @response = http_client.delete parameters.url,
             headers
         else
           fail "Unsupported method: #{method}"
@@ -36,10 +41,14 @@ module ApiSpec
         if ENV["API_SPEC_DEBUG"]
           puts "@response = #{@response}"
         end
-      rescue RestClient::Exception => e
+      rescue http_client::Exception => e
         @response = ErrorResponse.new(e.http_code, e.http_body)
         puts "Error response body: #{ @response.body }"
       end
+    end
+
+    def http_client
+      ApiSpec.configuration.http_client
     end
   end
 end

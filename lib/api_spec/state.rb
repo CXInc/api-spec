@@ -1,4 +1,4 @@
-module ApiSpec
+class ApiSpec
   class State
     class << self
       def set(key, value)
