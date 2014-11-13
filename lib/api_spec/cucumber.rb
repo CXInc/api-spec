@@ -17,7 +17,6 @@ end
 When(/^I GET "(.*?)"$/) do |path|
   parameters = ApiSpec::Parameters.new(:get, path)
   @response = http_client.get parameters.url, test_headers
-  puts "@response = #{@response}"
 end
 
 When(/^I GET "(.*?)" with:$/) do |path, table|
@@ -37,7 +36,10 @@ Then(/^the Content\-Type is (.*)$/) do |content_type|
     fail "Headers are not available on 4XX and 5XX responses"
   end
 
-  @response.headers[:content_type].should match(content_type)
+  content_type = @response.headers["Content-Type"] ||
+                 @response.headers[:content_type]
+
+  content_type.should match(content_type)
 end
 
 Then(/^the response contains an authentication cookie$/) do

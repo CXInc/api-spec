@@ -44,15 +44,26 @@ class ApiSpec
     end
 
     def headers
-      @header.merge(cookie_header)
+      @header.merge(cookie_header).merge(content_type_headers)
     end
 
     def cookie_header
-      string = @cookie
+      { "Cookie" => cookie_string, "HTTP_COOKIE" => cookie_string }
+    end
+
+    def cookie_string
+      @cookie
         .map { |key, value| "#{key}=#{value}" }
         .join("; ")
+    end
 
-      { "Cookie" => string }
+    def content_type_headers
+      if @json.any?
+        # {"Content-Type" => "application/json"}
+        {content_type: :json, "CONTENT_TYPE" => "application/json"}
+      else
+        {}
+      end
     end
 
     private

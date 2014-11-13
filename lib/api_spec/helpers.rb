@@ -27,10 +27,10 @@ class ApiSpec
             headers.merge(params: parameters.query)
         when :post
           @response = http_client.post parameters.url, parameters.body,
-            headers.merge(content_type: :json)
+            headers
         when :put
           @response = http_client.put parameters.url, parameters.body,
-            headers.merge(content_type: :json)
+            headers
         when :delete
           @response = http_client.delete parameters.url,
             headers
@@ -39,9 +39,9 @@ class ApiSpec
         end
 
         if ENV["API_SPEC_DEBUG"]
-          puts "@response = #{@response}"
+          puts "@response = #{@response.body}"
         end
-      rescue http_client::Exception => e
+      rescue RestClient::Exception => e
         @response = ErrorResponse.new(e.http_code, e.http_body)
         puts "Error response body: #{ @response.body }"
       end
