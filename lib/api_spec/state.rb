@@ -15,7 +15,6 @@ class ApiSpec
 
       def reset
         @state = {}
-        @helpers = {}
       end
 
       private
