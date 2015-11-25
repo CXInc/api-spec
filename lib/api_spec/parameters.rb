@@ -34,7 +34,9 @@ class ApiSpec
     end
 
     def body
-      if @json.any?
+      if @body
+        @body
+      elsif @json.any?
         @json.to_json
       elsif @form.any?
         @form
@@ -90,6 +92,8 @@ class ApiSpec
         @path_params[key] = value
       when "query"
         @query[key] = value
+      when "body"
+        @body = value
       when "json"
         parts = key.split("/")
 
